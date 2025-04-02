@@ -13,7 +13,7 @@ contract Init is Deploys {
         deploymentTimestamp = new DeploymentTimestamp();
         timelock = TimelockController(payable(Mainnet.TIMELOCK));
 
-        vm.createSelectFork("https://eth.llamarpc.com", vm.envUint("MAINNER_FORK_BLOCK_NUMBER"));
+        vm.createSelectFork(vm.envString("MAINNET_RPC_URL"), vm.envUint("MAINNET_FORK_BLOCK_NUMBER"));
 
         // Process governance
         _manageScripts();
@@ -77,6 +77,8 @@ contract Init is Deploys {
                 // we will execute the proposal manually
                 // This is a workaround to avoid timejumping and waiting for the timelock
                 // Todo: it could be nice to give choice on the timejumping or not.
+                // Todo: it could be nice to ensure that the proposalId is pending or ready,
+                // otherwise it means that the proposalId might be wrong.
                 vm.startPrank(Mainnet.TIMELOCK);
                 for (uint256 i; i < targets.length; i++) {
                     (bool success,) = targets[i].call{value: values[i]}(payloads[i]);
@@ -91,3 +93,6 @@ contract Init is Deploys {
         }
     }
 }
+
+// Todo:
+// - Add console.log or event when addresses are set
