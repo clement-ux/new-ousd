@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import {OETH} from "../../src/OETH.sol";
+import {OETH} from "../../src/token/OETH.sol";
 import {Base} from "test/Base.sol";
-import { Mainnet } from "test/Addresses.sol";
+import {Mainnet} from "test/Addresses.sol";
 
 contract OETHScript is Base {
     bytes32 public constant SALT_DEPLOY_2 = 0;
@@ -20,4 +20,10 @@ contract OETHScript is Base {
     function deploy_2_setAddresses() public {
         oeth = OETH(Mainnet.OETH);
     }
+
+    function deploy_2_governance()
+        internal
+        view
+        returns (address[] memory, uint256[] memory, bytes[] memory, bytes32, bytes32)
+    {}
 }

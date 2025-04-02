@@ -5,7 +5,7 @@ contract DeploymentTimestamp {
     mapping(bytes32 deploymentId => uint256 timestamp) public deploymentTimestamps;
 
     constructor() {
-        deploymentTimestamps[0x0825c85f669276c64493d2b6cf1adc6a2df9634dd20eff9ee97032420a7b9f11] = 1711987652; //1743521277;
+        deploymentTimestamps[0x0825c85f669276c64493d2b6cf1adc6a2df9634dd20eff9ee97032420a7b9f11] = 0; //1711987652; //1743521277;
     }
 
     // Todo: a function that take in args:
