@@ -33,18 +33,16 @@ contract Init is Deploys {
             deployGovernance,
         function () internal view returns (bytes32) id
     ) internal {
+        // Get the deployment data
+        (address[] memory targets, uint256[] memory values, bytes[] memory payloads, bytes32 predecessor, bytes32 salt)
+        = deployGovernance();
+
         uint256 ts = deploymentTimestamp.deploymentTimestamps(id());
         // If the script has not been deployed yet, or if the block is in the past
         // we will deploy the script and execute the governance
         if (ts == 0 || ts > _originalTimestamp) {
             deploy();
-            (address[] memory targets, uint256[] memory values, bytes[] memory payloads,,) = deployGovernance();
-            vm.startPrank(Mainnet.TIMELOCK);
-            for (uint256 i; i < targets.length; i++) {
-                (bool success,) = targets[i].call{value: values[i]}(payloads[i]);
-                require(success, "Proposal execution failed");
-            }
-            vm.stopPrank();
+            _executeTimelock(targets, values, payloads);
         }
         //
         else if (ts < _originalTimestamp) {
@@ -59,19 +57,8 @@ contract Init is Deploys {
 
             setAddress();
 
-            // Get the proposal parameters
-            (
-                address[] memory targets,
-                uint256[] memory values,
-                bytes[] memory payloads,
-                bytes32 predecessor,
-                bytes32 salt
-            ) = deployGovernance();
-            // Get the proposalId
-            bytes32 proposalId = keccak256(abi.encode(targets, values, payloads, predecessor, salt));
-
             // Check if the proposalId has been executed
-            if (!timelock.isOperationDone(proposalId)) {
+            if (!timelock.isOperationDone(getProposalId(targets, values, payloads, predecessor, salt))) {
                 // Execute the proposal
                 // Instead of timejumping and executing the proposal when timelock is ready
                 // we will execute the proposal manually
@@ -79,18 +66,30 @@ contract Init is Deploys {
                 // Todo: it could be nice to give choice on the timejumping or not.
                 // Todo: it could be nice to ensure that the proposalId is pending or ready,
                 // otherwise it means that the proposalId might be wrong.
-                vm.startPrank(Mainnet.TIMELOCK);
-                for (uint256 i; i < targets.length; i++) {
-                    (bool success,) = targets[i].call{value: values[i]}(payloads[i]);
-                    require(success, "Proposal execution failed");
-                }
-                vm.stopPrank();
+                _executeTimelock(targets, values, payloads);
             }
         } else {
-            // The script has been deployed and the proposalId has been executed
-            // We can set the address, but in theory we should not be here
-            setAddress();
+            revert("We should not be here");
         }
+    }
+
+    function _executeTimelock(address[] memory targets, uint256[] memory values, bytes[] memory payloads) internal {
+        vm.startPrank(Mainnet.TIMELOCK);
+        for (uint256 i; i < targets.length; i++) {
+            (bool success,) = targets[i].call{value: values[i]}(payloads[i]);
+            require(success, "Proposal execution failed");
+        }
+        vm.stopPrank();
+    }
+
+    function getProposalId(
+        address[] memory targets,
+        uint256[] memory values,
+        bytes[] memory payloads,
+        bytes32 predecessor,
+        bytes32 salt
+    ) internal pure returns (bytes32) {
+        return keccak256(abi.encode(targets, values, payloads, predecessor, salt));
     }
 }
 
