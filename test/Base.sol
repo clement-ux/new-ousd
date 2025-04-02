@@ -6,7 +6,7 @@ import {OETH} from "src/OETH.sol";
 
 import { DeploymentTimestamp } from "script/DeploymentTimestamp.sol";
 
-import {Test} from "lib/forge-std/src/Test.sol";
+import {Test} from "forge-std/Test.sol";
 
 contract Base is Test {
     OUSD ousd;
