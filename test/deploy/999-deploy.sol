@@ -20,6 +20,8 @@ abstract contract DeployTemplate is Base {
         Id
     }
 
+    event AddressSet(address _address);
+
     //function _create() internal virtual {}
     //function _setAddresses() internal virtual {}
     //function _governance() internal virtual returns (GovernancePayload memory) {}

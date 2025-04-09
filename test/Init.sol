@@ -5,7 +5,6 @@ import {Deploys} from "./deploy/0-core.sol";
 import {DeploymentTimestamp} from "script/DeploymentTimestamp.sol";
 import {TimelockController} from "@openzeppelin-4.6.0/contracts/governance/TimelockController.sol";
 import {Mainnet} from "test/Addresses.sol";
-import {Base} from "test/Base.sol";
 import {DeployTemplate} from "test/deploy/999-deploy.sol";
 
 contract Init is Deploys {
@@ -25,10 +24,12 @@ contract Init is Deploys {
         _originalTimestamp = block.timestamp;
 
         _deployOrSet(deploy_1);
-        _deployOrSet(deploy_2());
+        _deployOrSet(deploy_2);
     }
 
-    function _deployOrSet(function (DeployTemplate.DeployActions) internal deploy) internal {
+    function _deployOrSet(
+        function (DeployTemplate.DeployActions) internal returns (DeployTemplate.GovernancePayload memory) deploy
+    ) internal {
         // Get the deployment data
         DeployTemplate.GovernancePayload memory gp = deploy(DeployTemplate.DeployActions.Governance);
 

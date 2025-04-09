@@ -66,5 +66,6 @@ contract OUSDScript is DeployTemplate {
 
     function _setAddresses_1() internal {
         ousd = OUSD(Mainnet.OUSD);
+        emit AddressSet(address(ousd));
     }
 }

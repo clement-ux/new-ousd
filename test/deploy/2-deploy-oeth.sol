@@ -32,5 +32,6 @@ contract OETHScript is DeployTemplate {
 
     function _setAddresses_2() internal {
         oeth = OETH(Mainnet.OETH);
+        emit AddressSet(address(oeth));
     }
 }
