@@ -13,6 +13,8 @@ contract Init is Deploys {
     function setUp() public {
         deploymentTimestamp = new DeploymentTimestamp();
         timelock = TimelockController(payable(Mainnet.TIMELOCK));
+        if (IS_TEST) deployer = address(this);
+        else deployer = vm.envAddress("MAINNET_DEPLOYER");
 
         vm.createSelectFork(vm.envString("MAINNET_RPC_URL"), vm.envUint("MAINNET_FORK_BLOCK_NUMBER"));
 

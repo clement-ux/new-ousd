@@ -24,4 +24,6 @@ contract Base is Test {
     InitializeGovernedUpgradeabilityProxy ousdVaultProxy;
 
     DeploymentTimestamp deploymentTimestamp;
+
+    address deployer;
 }

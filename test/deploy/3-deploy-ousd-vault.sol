@@ -39,8 +39,7 @@ contract OUSDVaultScript is DeployTemplate {
         // Initialize the proxy with the implementation address
         bytes memory initData =
             abi.encodeWithSelector(VaultInitializer.initialize.selector, address(0x1234), address(ousd));
-        ousdVaultProxy.initialize({_logic: address(ousdVault), _initGovernor: address(this), _data: initData});
-        
+        ousdVaultProxy.initialize({_logic: address(ousdVault), _initGovernor: deployer, _data: initData});
 
         // Set Admin implementation address
         VaultCore(address(ousdVaultProxy)).setAdminImpl(address(ousdVaultAdmin));
