@@ -3,5 +3,6 @@ pragma solidity ^0.8.13;
 
 import {OUSDScript} from "./1-deploy-ousd.sol";
 import {OETHScript} from "./2-deploy-oeth.sol";
+import {OUSDVaultScript} from "./3-deploy-ousd-vault.sol";
 
-contract Deploys is OUSDScript, OETHScript {}
+contract Deploys is OUSDScript, OETHScript, OUSDVaultScript {}

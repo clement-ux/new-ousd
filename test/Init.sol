@@ -25,6 +25,7 @@ contract Init is Deploys {
 
         _deployOrSet(deploy_1);
         _deployOrSet(deploy_2);
+        _deployOrSet(deploy_3);
     }
 
     function _deployOrSet(
