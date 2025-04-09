@@ -21,9 +21,4 @@ abstract contract DeployTemplate is Base {
     }
 
     event AddressSet(address _address);
-
-    //function _create() internal virtual {}
-    //function _setAddresses() internal virtual {}
-    //function _governance() internal virtual returns (GovernancePayload memory) {}
-    //function _scriptKey() internal virtual returns (GovernancePayload memory gp) {}
 }
