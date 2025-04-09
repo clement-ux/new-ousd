@@ -5,6 +5,8 @@ import {Deploys} from "./deploy/0-core.sol";
 import {DeploymentTimestamp} from "script/DeploymentTimestamp.sol";
 import {TimelockController} from "@openzeppelin-4.6.0/contracts/governance/TimelockController.sol";
 import {Mainnet} from "test/Addresses.sol";
+import {Base} from "test/Base.sol";
+import {DeployTemplate} from "test/deploy/999-deploy.sol";
 
 contract Init is Deploys {
     uint256 private _originalTimestamp;
@@ -22,27 +24,20 @@ contract Init is Deploys {
     function _manageScripts() internal {
         _originalTimestamp = block.timestamp;
 
-        _deployOrSet(deploy_1, deploy_1_setAddresses, deploy_1_governance, deploy_1_id);
-        _deployOrSet(deploy_2, deploy_2_setAddresses, deploy_2_governance, deploy_2_id);
+        _deployOrSet(deploy_1);
+        _deployOrSet(deploy_2());
     }
 
-    function _deployOrSet(
-        function () internal deploy,
-        function () internal setAddress,
-        function () internal view returns (address[] memory, uint256[] memory, bytes[] memory, bytes32, bytes32)
-            deployGovernance,
-        function () internal view returns (bytes32) id
-    ) internal {
+    function _deployOrSet(function (DeployTemplate.DeployActions) internal deploy) internal {
         // Get the deployment data
-        (address[] memory targets, uint256[] memory values, bytes[] memory payloads, bytes32 predecessor, bytes32 salt)
-        = deployGovernance();
+        DeployTemplate.GovernancePayload memory gp = deploy(DeployTemplate.DeployActions.Governance);
 
-        uint256 ts = deploymentTimestamp.deploymentTimestamps(id());
+        uint256 ts = deploymentTimestamp.deploymentTimestamps(gp.scriptKey);
         // If the script has not been deployed yet, or if the block is in the past
         // we will deploy the script and execute the governance
         if (ts == 0 || ts > _originalTimestamp) {
-            deploy();
-            _executeTimelock(targets, values, payloads);
+            deploy(DeployTemplate.DeployActions.Create);
+            _executeTimelock(gp.targets, gp.values, gp.payloads);
         }
         //
         else if (ts < _originalTimestamp) {
@@ -55,10 +50,10 @@ contract Init is Deploys {
             // we will execute governance it manually
             // Todo: to speed up the process, we could enter only if we are close from the delay.
 
-            setAddress();
+            deploy(DeployTemplate.DeployActions.SetAddresses);
 
             // Check if the proposalId has been executed
-            if (!timelock.isOperationDone(getProposalId(targets, values, payloads, predecessor, salt))) {
+            if (!timelock.isOperationDone(getProposalId(gp.targets, gp.values, gp.payloads, gp.predecessor, gp.salt))) {
                 // Execute the proposal
                 // Instead of timejumping and executing the proposal when timelock is ready
                 // we will execute the proposal manually
@@ -66,7 +61,7 @@ contract Init is Deploys {
                 // Todo: it could be nice to give choice on the timejumping or not.
                 // Todo: it could be nice to ensure that the proposalId is pending or ready,
                 // otherwise it means that the proposalId might be wrong.
-                _executeTimelock(targets, values, payloads);
+                _executeTimelock(gp.targets, gp.values, gp.payloads);
             }
         } else {
             revert("We should not be here");

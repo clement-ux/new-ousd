@@ -2,28 +2,35 @@
 pragma solidity ^0.8.13;
 
 import {OETH} from "../../src/token/OETH.sol";
-import {Base} from "test/Base.sol";
+import {DeployTemplate} from "test/deploy/999-deploy.sol";
 import {Mainnet} from "test/Addresses.sol";
 
-contract OETHScript is Base {
+contract OETHScript is DeployTemplate {
     bytes32 public constant SALT_DEPLOY_2 = 0;
 
-    function deploy_2() public {
-        // Internal logic can be added here if needed
+    function deploy_2(DeployActions action) public returns (GovernancePayload memory gp) {
+        if (action == DeployActions.Create) {
+            _create_2();
+        } else if (action == DeployActions.SetAddresses) {
+            _setAddresses_2();
+        } else if (action == DeployActions.Governance) {
+            gp = _governance_2();
+        } else if (action == DeployActions.Id) {
+            gp = _scriptKey_2();
+        }
+    }
+
+    function _create_2() internal {
         oeth = new OETH();
     }
 
-    function deploy_2_id() public view returns (bytes32) {
-        return keccak256(abi.encodePacked("OETHScript", block.chainid, SALT_DEPLOY_2));
+    function _governance_2() internal view returns (GovernancePayload memory) {}
+
+    function _scriptKey_2() internal view returns (GovernancePayload memory gp) {
+        gp.scriptKey = keccak256(abi.encodePacked("OETHScript", block.chainid, SALT_DEPLOY_2));
     }
 
-    function deploy_2_setAddresses() public {
+    function _setAddresses_2() internal {
         oeth = OETH(Mainnet.OETH);
     }
-
-    function deploy_2_governance()
-        internal
-        view
-        returns (address[] memory, uint256[] memory, bytes[] memory, bytes32, bytes32)
-    {}
 }
