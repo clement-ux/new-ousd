@@ -7,6 +7,7 @@ abstract contract DeployTemplate is Base {
     struct GovernancePayload {
         address[] targets;
         uint256[] values;
+        string[] signatures;
         bytes[] payloads;
         bytes32 predecessor;
         bytes32 salt;

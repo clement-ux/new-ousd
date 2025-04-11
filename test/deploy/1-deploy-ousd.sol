@@ -41,17 +41,22 @@ contract Script_001 is DeployTemplate {
         uint8 actionCount = 1;
         address[] memory targets = new address[](actionCount);
         uint256[] memory values = new uint256[](actionCount);
+        string[] memory signatures = new string[](actionCount);
         bytes[] memory payloads = new bytes[](actionCount);
         bytes32 predecessor;
         bytes32 salt;
 
         targets[0] = address(ousd);
-        payloads[0] = abi.encodeWithSelector(OUSD.delegateYield.selector, address(0x123), address(0x456));
+        values[0] = 0;
+        signatures[0] = "delegateYield(address,address)";
+        // We use signature over selector, because we need signature when proposing on the governance.
+        payloads[0] = abi.encodeWithSignature(signatures[0], address(0x123), address(0x456)); 
 
         return (
             GovernancePayload({
                 targets: targets,
                 values: values,
+                signatures: signatures,
                 payloads: payloads,
                 predecessor: predecessor,
                 salt: salt,

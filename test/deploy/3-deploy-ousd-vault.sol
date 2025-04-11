@@ -59,6 +59,7 @@ contract Script_003 is DeployTemplate {
             GovernancePayload({
                 targets: targets,
                 values: values,
+                signatures: new string[](actionCount),
                 payloads: payloads,
                 predecessor: predecessor,
                 salt: salt,
