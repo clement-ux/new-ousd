@@ -2,6 +2,7 @@
 src = "src"
 out = "out"
 libs = ["dependencies"]
+ignored_warnings_from = ["dependencies/", "src/token/OUSD.sol"]
 
 # Remappings
 auto_detect_remappings = false
