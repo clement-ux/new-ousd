@@ -5,7 +5,7 @@ import {Deploys} from "./deploy/0-core.sol";
 import {DeploymentTimestamp} from "script/DeploymentTimestamp.sol";
 import {TimelockController} from "@openzeppelin-4.6.0/contracts/governance/TimelockController.sol";
 import {Mainnet} from "test/Addresses.sol";
-import {DeployTemplate} from "test/deploy/999-deploy.sol";
+import {DeployTemplate} from "test/deploy/DeployTemplate.sol";
 
 contract Init is Deploys {
     uint256 private _originalTimestamp;

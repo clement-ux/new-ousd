@@ -7,20 +7,20 @@ import {VaultAdmin} from "src/vault/VaultAdmin.sol";
 import {VaultInitializer} from "src/vault/VaultInitializer.sol";
 import {InitializeGovernedUpgradeabilityProxy} from "../../src/proxies/InitializeGovernedUpgradeabilityProxy.sol";
 import {Mainnet} from "test/Addresses.sol";
-import {DeployTemplate} from "test/deploy/999-deploy.sol";
+import {DeployTemplate} from "test/deploy/DeployTemplate.sol";
 
-contract OUSDVaultScript is DeployTemplate {
+contract Script_003 is DeployTemplate {
     bytes32 public constant SALT_DEPLOY_3 = 0;
 
     function deploy_3(DeployActions action) public returns (GovernancePayload memory gp) {
         if (action == DeployActions.Create) {
             _create_3();
         } else if (action == DeployActions.SetAddresses) {
-            _setAddresses_3();
+            _setAddresses_003();
         } else if (action == DeployActions.Governance) {
-            gp = _governance_3();
+            gp = _governance_003();
         } else if (action == DeployActions.Id) {
-            gp = _scriptKey_3();
+            gp = _scriptKey_003();
         }
     }
 
@@ -47,7 +47,7 @@ contract OUSDVaultScript is DeployTemplate {
         ousdVault = VaultCore(address(ousdVaultProxy));
     }
 
-    function _governance_3() internal view returns (GovernancePayload memory) {
+    function _governance_003() internal view returns (GovernancePayload memory) {
         uint8 actionCount = 0;
         address[] memory targets = new address[](actionCount);
         uint256[] memory values = new uint256[](actionCount);
@@ -62,16 +62,16 @@ contract OUSDVaultScript is DeployTemplate {
                 payloads: payloads,
                 predecessor: predecessor,
                 salt: salt,
-                scriptKey: _scriptKey_3().scriptKey
+                scriptKey: _scriptKey_003().scriptKey
             })
         );
     }
 
-    function _scriptKey_3() internal view returns (GovernancePayload memory gp) {
-        gp.scriptKey = keccak256(abi.encodePacked("OUSDVaultScript", block.chainid, SALT_DEPLOY_3));
+    function _scriptKey_003() internal view returns (GovernancePayload memory gp) {
+        gp.scriptKey = keccak256(abi.encodePacked("Script_003", block.chainid, SALT_DEPLOY_3));
     }
 
-    function _setAddresses_3() internal {
+    function _setAddresses_003() internal {
         ousdVault = VaultCore(Mainnet.OUSD_VAULT);
         emit AddressSet(address(ousd));
     }

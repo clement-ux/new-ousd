@@ -4,24 +4,24 @@ pragma solidity ^0.8.13;
 import {OUSD} from "../../src/token/OUSD.sol";
 import {InitializeGovernedUpgradeabilityProxy} from "../../src/proxies/InitializeGovernedUpgradeabilityProxy.sol";
 import {Mainnet} from "test/Addresses.sol";
-import {DeployTemplate} from "test/deploy/999-deploy.sol";
+import {DeployTemplate} from "test/deploy/DeployTemplate.sol";
 
-contract OUSDScript is DeployTemplate {
+contract Script_001 is DeployTemplate {
     bytes32 public constant SALT_DEPLOY_1 = 0;
 
     function deploy_1(DeployActions action) public returns (GovernancePayload memory gp) {
         if (action == DeployActions.Create) {
-            _create_1();
+            _create_001();
         } else if (action == DeployActions.SetAddresses) {
-            _setAddresses_1();
+            _setAddresses_001();
         } else if (action == DeployActions.Governance) {
-            gp = _governance_1();
+            gp = _governance_001();
         } else if (action == DeployActions.Id) {
-            gp = _scriptKey_1();
+            gp = _scriptKey_001();
         }
     }
 
-    function _create_1() internal {
+    function _create_001() internal {
         //Deploy Proxy
         ousdProxy = new InitializeGovernedUpgradeabilityProxy();
         vm.label(address(ousdProxy), "OUSD Proxy");
@@ -37,7 +37,7 @@ contract OUSDScript is DeployTemplate {
         ousd = OUSD(address(ousdProxy));
     }
 
-    function _governance_1() internal view returns (GovernancePayload memory) {
+    function _governance_001() internal view returns (GovernancePayload memory) {
         uint8 actionCount = 1;
         address[] memory targets = new address[](actionCount);
         uint256[] memory values = new uint256[](actionCount);
@@ -55,16 +55,16 @@ contract OUSDScript is DeployTemplate {
                 payloads: payloads,
                 predecessor: predecessor,
                 salt: salt,
-                scriptKey: _scriptKey_1().scriptKey
+                scriptKey: _scriptKey_001().scriptKey
             })
         );
     }
 
-    function _scriptKey_1() internal view returns (GovernancePayload memory gp) {
-        gp.scriptKey = keccak256(abi.encodePacked("OUSDScript", block.chainid, SALT_DEPLOY_1));
+    function _scriptKey_001() internal view returns (GovernancePayload memory gp) {
+        gp.scriptKey = keccak256(abi.encodePacked("Script_001", block.chainid, SALT_DEPLOY_1));
     }
 
-    function _setAddresses_1() internal {
+    function _setAddresses_001() internal {
         ousd = OUSD(Mainnet.OUSD);
         emit AddressSet(address(ousd));
     }

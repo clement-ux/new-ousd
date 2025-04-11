@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import {Script} from "dependencies/forge-std-1.9.6/src/Script.sol";
-import {Vm, VmSafe} from "dependencies/forge-std-1.9.6/src/Vm.sol";
+import {Script} from "forge-std/Script.sol";
+import {Vm, VmSafe} from "forge-std/Vm.sol";
 
-import {OUSDScript} from "test/deploy/1-deploy-ousd.sol";
+import {Script_001} from "test/deploy/1-deploy-ousd.sol";
 
-contract Deploy_001 is Script, OUSDScript {
+contract Deploy_001 is Script, Script_001 {
     function setUp() public {}
 
     function run() public {
@@ -16,7 +16,7 @@ contract Deploy_001 is Script, OUSDScript {
             ? vm.startBroadcast(vm.envUint("MAINNET_DEPLOYER_PRIVATE_KEY"))
             : vm.startBroadcast(vm.envAddress("MAINNET_DEPLOYER"));
 
-        _create_1();
+        _create_001();
         vm.stopBroadcast();
     }
 }
