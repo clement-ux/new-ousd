@@ -50,7 +50,7 @@ contract Script_001 is DeployTemplate {
         values[0] = 0;
         signatures[0] = "delegateYield(address,address)";
         // We use signature over selector, because we need signature when proposing on the governance.
-        payloads[0] = abi.encodeWithSignature(signatures[0], address(0x123), address(0x456)); 
+        payloads[0] = abi.encodeWithSignature(signatures[0], address(0x123), address(0x456));
 
         return (
             GovernancePayload({

@@ -4,19 +4,19 @@ pragma solidity ^0.8.13;
 import {Script} from "forge-std/Script.sol";
 import {Vm, VmSafe} from "forge-std/Vm.sol";
 import {Mainnet} from "test/Addresses.sol";
-import {console} from "forge-std/console.sol";
+import {BaseMainnet} from "script/BaseMainnet.sol";
 
 import {Script_001} from "test/deploy/1-deploy-ousd.sol";
 
-contract Deploy_001 is Script, Script_001 {
+contract Deploy_001 is BaseMainnet, Script_001 {
     function setUp() public {}
 
     function run() public {
-        vm.createSelectFork(vm.envString("MAINNET_SEPOLIA_RPC_URL"));
+        vm.createSelectFork(vm.envString(DEPLOY_RPC));
 
         vm.isContext(VmSafe.ForgeContext.ScriptBroadcast)
-            ? vm.startBroadcast(vm.envUint("MAINNET_DEPLOYER_PRIVATE_KEY"))
-            : vm.startBroadcast(vm.envAddress("MAINNET_DEPLOYER"));
+            ? vm.startBroadcast(vm.envUint(DEPLOY_PK))
+            : vm.startBroadcast(vm.envAddress(DEPLOY_DEPLOYER));
 
         deploy_contract();
         vm.stopBroadcast();
@@ -46,6 +46,7 @@ contract Deploy_001 is Script, Script_001 {
     }
 }
 
-// How to run:
+// How to run for test (dry run):
+// forge script script/deploy/1-deploy-ousd.sol -vvvv
+// How to run for real (deploy):
 // forge script script/deploy/1-deploy-ousd.sol --broadcast --verify -vvvv
-//
