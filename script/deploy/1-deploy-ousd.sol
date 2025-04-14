@@ -9,27 +9,14 @@ import {BaseMainnet} from "script/BaseMainnet.sol";
 import {Script_001} from "test/deploy/1-deploy-ousd.sol";
 
 contract Deploy_001 is BaseMainnet, Script_001 {
-    function setUp() public {}
-
-    function run() public {
-        vm.createSelectFork(vm.envString(DEPLOY_RPC));
-
-        vm.isContext(VmSafe.ForgeContext.ScriptBroadcast)
-            ? vm.startBroadcast(vm.envUint(DEPLOY_PK))
-            : vm.startBroadcast(vm.envAddress(DEPLOY_DEPLOYER));
-
-        deploy_contract();
-        vm.stopBroadcast();
-
-        if (vm.isContext(VmSafe.ForgeContext.ScriptDryRun)) require(testGovernance(), "Governance test failed");
-
-        // Log the deployment actions
-        // Generate json
-    }
-
-    function deploy_contract() internal {
+    function deploy_contract() internal override deployEnv {
         // Deploy the contract
         _create_001();
+    }
+
+    function hookAfterRun() internal override {
+        // Test the contract
+        require(testGovernance(), "Governance test failed");
     }
 
     function testGovernance() public returns (bool) {
